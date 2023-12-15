@@ -1,35 +1,64 @@
 # Momblish
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/momblish`. To experiment with that code, run `bin/console` for an interactive prompt.
+Momblish is a library for generating fake words in any phoenetic.
 
-TODO: Delete this and the text above, and describe your gem
+[http://mentalfloss.com/article/69880/7-fake-words-ended-dictionary](http://mentalfloss.com/article/69880/7-fake-words-ended-dictionary)
 
-## Installation
+It is named after a "fake" word put into the OED on accident.
 
-Add this line to your application's Gemfile:
+Momblish uses trigram analysis to generate (mostly) pronounacble gibberish - so
+it can be used for any language that can be n-gram analyzed.
+
+## Description
+
+To use moblish, require it -
 
 ```ruby
-gem 'momblish'
+require 'momblish'
+english = Momblish.english()
+english.word
 ```
 
-And then execute:
 
-    $ bundle
+Currently availabe corpuses are:
 
-Or install it yourself as:
+- English
+- Spanish
+- 1000 Most Frequent English Words (Simple)
+- Names
 
-    $ gem install momblish
 
-## Usage
+Each time you load the English momblish it will perform an analysis on
+the corpus file and use that data to generate nonsense words.
 
-TODO: Write usage instructions here
+To avoid this computation overhead, you can save the pre-analyzed corpus
+as a file and read it in on demand.
 
-## Development
+```ruby
+require 'momblish'
+m = Momblish.english()
+m.corpus.save('/tmp/corpus.json')
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+c = Corpus.load('/tmp/corpus.json')
+n = Momblish(c)
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To get Momblish to generate words for you call `word` on a Momblish instance.
 
-## Contributing
+`sentence` will yield a word to a block. You can feed this to your program to make word lists
+of varying length.  If you don't provide a length to `sentence` it will yield forever.
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/stephenprater/momblish.
+```ruby
+
+require 'momblish'
+
+simple = Momblish.simple
+
+simple.sentence(10).map(&:1)
+
+# or
+
+simple.sentence do |word|
+  # do some stuff and remember to break
+end
+```

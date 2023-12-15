@@ -8,7 +8,7 @@ class Momblish
   module WeightedSample
     refine Hash do
       def weighted_sample
-        self.max_by { |_, weight| rand ** (1.0 / weight) }.first
+        self.max_by { |_, weight| rand ** (1.0 / weight) }&.first
       end
     end
   end
@@ -16,7 +16,10 @@ class Momblish
   using WeightedSample
 
   DICT = {
-    'english' => ['/usr/share/dict/words', '/usr/dict/words', '/usr/share/dict/web2']
+    'english' => ['/usr/share/dict/words', '/usr/dict/words', '/usr/share/dict/web2'],
+    'simple' => ["#{__dir__}/corpuses/simple.txt"],
+    'names' => ['/usr/share/dict/propernames', '/usr/dict/propernames'],
+    'spanish' => ["#{__dir__}/corpuses/spanish.txt"]
   }
 
   class EmptyCorpusError < StandardError
@@ -29,13 +32,17 @@ class Momblish
 
   class << self
     def lookup_dict(lang)
-      DICT[lang].find { |location| File.exist?(location) }
+      DICT[lang].find { |location| puts location; File.exist?(location) }
     end
 
-    def english
-      dict_file = lookup_dict('english')
-      corpus = Momblish::CorpusAnalyzer.new(File.readlines(dict_file)).corpus
-      new(corpus)
+    def method_missing(lang)
+      if(DICT.has_key?(lang.to_s))
+        dict_file = lookup_dict(lang.to_s)
+        corpus = Momblish::CorpusAnalyzer.new(File.readlines(dict_file)).corpus
+        new(corpus)
+      else
+        super
+      end
     end
   end
 
@@ -58,6 +65,9 @@ class Momblish
       last_bigram = word[-2..-1]
 
       next_letter = @corpus.occurrences[last_bigram].weighted_sample
+
+      return word.downcase if next_letter.nil?
+
       word += next_letter
     end
 
