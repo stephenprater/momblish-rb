@@ -75,7 +75,7 @@ class Momblish
   end
 
   def sentence(count = nil, word_length: nil)
-    return enum_for(:sentence, word_length: word_length) unless block_given?
+    return enum_for(:sentence, count, word_length: word_length) unless block_given?
 
     if count.nil?
       loop { yield word(word_length) }
