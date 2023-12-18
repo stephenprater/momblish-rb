@@ -7,7 +7,8 @@ Gem::Specification.new do |spec|
   spec.name          = "momblish"
   spec.version       = Momblish::VERSION
   spec.authors       = ["Stephen Prater"]
-  spec.email         = ["me@stephenprater.com "]
+  spec.email         = ["me@stephenprater.com"]
+  spec.license       = "MIT"
 
   spec.summary       = "Generate nonsense words in any language by corpus analysis"
   spec.homepage      = "https://github.com/stephenprater/momblish-rb"

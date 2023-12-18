@@ -59,7 +59,7 @@ class Momblish
   def word(length = nil)
     length ||= rand(4..12)
 
-    word = @corpus.weighted_bigrams.keys.sample
+    word = @corpus.weighted_bigrams.weighted_sample
 
     (length - 2).times do
       last_bigram = word[-2..-1]
@@ -74,17 +74,13 @@ class Momblish
     word.downcase
   end
 
-  def sentence(count = nil, word_length = nil)
-    raise ArgumentError, 'You must provide a block or a count' if count.nil? && !block_given?
+  def sentence(count = nil, word_length: nil)
+    return enum_for(:sentence, word_length: word_length) unless block_given?
 
-    if block_given?
-      if count.nil?
-        loop { yield word(word_length) }
-      else
-        count.times { yield word(word_length) }
-      end
+    if count.nil?
+      loop { yield word(word_length) }
     else
-      Array.new(count) { word(word_length) }
+      count.times { yield word(word_length) }
     end
   end
 end
