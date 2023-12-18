@@ -54,7 +54,7 @@ require 'momblish'
 
 simple = Momblish.simple
 
-simple.sentence(10).map(&:1)
+simple.sentence(10).map { _1 }
 
 # or
 
