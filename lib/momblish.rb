@@ -32,7 +32,7 @@ class Momblish
 
   class << self
     def lookup_dict(lang)
-      DICT[lang].find { |location| puts location; File.exist?(location) }
+      DICT[lang].find { |location| File.exist?(location) }
     end
 
     def method_missing(lang)

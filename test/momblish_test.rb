@@ -35,23 +35,23 @@ class TestMomblish < Minitest::Test
   end
 
   def test_words
-    assert_equal 'dabdcbdabc', @momblish.word(10).downcase
+    assert_equal 'dcadbcdacb', @momblish.word(10).downcase
   end
 
   def test_sentence
-    expected = ["dabd", "abdc", "cabd", "dcbd"]
-    actual = @momblish.sentence(4, 4).map(&:itself)
+    expected = ["dcad", "adbc", "abda", "cdab"]
+    actual = @momblish.sentence(4, word_length: 4).map(&:itself)
     assert_equal expected, actual
   end
 
   def test_infinit_sentence
     w = @momblish.enum_for(:sentence)
-    assert_equal 'abdcbdab', w.next
-    assert_equal 'cdbca', w.next
+    assert_equal 'adbacdba', w.next
+    assert_equal 'cabda', w.next
   end
 
-  def test_loads_english_dictionary
-    m = Momblish.english
+  def test_loads_simple_dictionary
+    m = Momblish.simple
     refute_nil m.corpus.occurrences
   end
 end
